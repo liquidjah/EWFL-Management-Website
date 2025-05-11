@@ -1,0 +1,54 @@
+{% extends "management/base.html" %}
+{% block content %}
+    <h1>{{team.name}}</h1>
+    <h2>{{team.owner}}</h2>
+    <table class="table" style="width: 100%;  margin-left: 10px; background-color: #fcfbf8;" border="0">
+        <tr>
+            <th style="background-color: #fcfbf8;">Position</th>
+            <th style="background-color: #fcfbf8;">Name</th>
+            <th style="background-color: #fcfbf8;">Age</th>
+            <th style="background-color: #fcfbf8;">Overall</th>
+            <th style="background-color: #fcfbf8;">Potential</th>
+            <th style="background-color: #fcfbf8;">Nation</th>
+            <th style="background-color: #fcfbf8;">Tactic</th>
+            <th style="background-color: #fcfbf8;">Wage</th>
+            <th style="background-color: #fcfbf8;">Transfer Offer</th>
+            <th style="background-color: #fcfbf8;">Loan Offer</th>
+        </tr>
+            {% for i in players %}
+                {% if i.loaned != 'out' and not i.free_agent %}
+                <tr>
+                    <td style="background-color: #fcfbf8;">{{i.position}}</td>
+                    <td style="background-color: #fcfbf8;">{{i.name}}</td>
+                    <td style="background-color: #fcfbf8;">{{i.age}}</td>
+                    <td style="background-color: #fcfbf8;">{{i.overall}}</td>
+                    <td style="background-color: #fcfbf8;">{{i.potential}}</td>
+                    <td style="background-color: #fcfbf8;">{{i.nationality}}</td>
+                    <td style="background-color: #fcfbf8;">{{i.tactic}}</td>
+                    <td style="background-color: #fcfbf8;">{{i.wage}}</td>
+                    {% if user.is_authenticated and user != team.owner  %}
+                    <td style="background-color: #fcfbf8;"><form action="{% url 'make-offer' %}" method="POST">
+                      {% csrf_token %}
+                      <input type="hidden" name="player_id" value="{{ i.pk }}">
+                      <input type="hidden" name="team_to" value="{{ team.name }}">
+                      <input type="number" name="amount" min="0" max="{{budget}}" step="0.5">
+                      <input type="hidden" name="offer_type" value="transfer">
+                      <button class="btn btn-sm btn-dark" type="submit">Make Offer</button>
+                    </form></td>
+                    <td style="background-color: #fcfbf8;"><form action="{% url 'make-offer' %}" method="POST">
+                      {% csrf_token %}
+                      <input type="hidden" name="player_id" value="{{ i.pk }}">
+                      <input type="hidden" name="team_to" value="{{ team.name }}">
+                      <input type="number" name="amount" min="0" max="{{i.wage}}" step="10">
+                      <input type="hidden" name="offer_type" value="loan">
+                      <button class="btn btn-sm btn-dark" type="submit">Loan Offer</button>
+                    </form></td>
+                    {% else %}
+                    <td style="background-color: #fcfbf8;"></td>
+                    <td style="background-color: #fcfbf8;"></td>
+                    {% endif %}
+                </tr>
+                {% endif %}
+            {% endfor %}
+    </table>
+{% endblock content %}

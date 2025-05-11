@@ -1,0 +1,30 @@
+{% extends "management/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <h1>Manage Budgets</h1>
+    <hr>
+    <h1>Transfer Budget: {{transfer_budget}}</h1>
+    <h1>Wage Budget: {{wage_budget}}</h1>
+    <h1>Facilities Budget: {{facilities_budget}}</h1>
+    <hr>
+    <h3>Wage conversion rate: 0.5M Transfer/Facilities <-> 250 Wage</h3>
+    <form action="{% url 'budget-transfer' %}" method="POST" style="width: 100%;  margin-left: 15px;">
+        {% csrf_token %}
+
+        <label for="budget_from" style="font-size: 30px">Transfer from:</label>
+        <select id="budget_from" name="budget_from" style="font-size: 30px; height: 60px; width: 325px; border-radius: 10px">
+            <option value="Transfer">Transfer</option>
+            <option value="Wage">Wage</option>
+        </select>
+
+        <label for="budget_to" style="font-size: 30px">Transfer to:</label>
+        <select id="budget_to" name="budget_to" style="font-size: 30px; height: 60px; width: 325px; border-radius: 10px">
+            <option value="Wage">Wage</option>
+            <option value="Transfer">Transfer</option>
+            <option value="Facilities">Facilities</option>
+        </select>
+
+        <button class="btn btn-dark" type="submit" style="font-size: 20px">Submit</button>
+    </form>
+    <p style="color: red; margin-left: 15px; font-size: 25px">Warning: Once you transfer money to facilities budget it CANNOT be transferred back.</p>
+{% endblock content %}

@@ -1,0 +1,95 @@
+{% extends "management/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <h1>Upgrade Staff</h1>
+    <hr>
+    <h2>Current Staff Levels</h2>
+    <table style="width: 100%;  margin-left: 15px; background-color: #fcfbf8; font-size: 25px" border="0">
+        <tr>
+            <th>Scout</th>
+            <th>Director of Football</th>
+            <th>Assistant Manager</th>
+            <th>Goalkeeping Coach</th>
+        </tr>
+        <tr>
+            <td>Level {{scout}}</td>
+            <td>Level {{dof}}</td>
+            <td>Level {{assistant_manager}}</td>
+            <td>Level {{gk_coach}}</td>
+        </tr>
+        <tr>
+            <th>Defending Coach</th>
+            <th>Midfield Coach</th>
+            <th>Attacking Coach</th>
+            <th>Set Piece Coach</th>
+        </tr>
+        <tr>
+            <td>Level {{def_coach}}</td>
+            <td>Level {{mid_coach}}</td>
+            <td>Level {{att_coach}}</td>
+            <td>Level {{set_piece_coach}}</td>
+        </tr>
+    </table>
+
+    <hr>
+    <h2>Upgrade Costs</h2>
+    <h3 style="font-weight: bold">Scout: </h3>
+    <table style="width: 100%;  margin-left: 15px; background-color: #fcfbf8; font-size: 25px" border="0">
+        <tr>
+            <th>Level 1</th>
+            <th>Level 2</th>
+            <th>Level 3</th>
+            <th>Level 4</th>
+            <th>Level 5</th>
+        </tr>
+        <tr>
+            <td>FREE</td>
+            <td>10M</td>
+            <td>30M</td>
+            <td>50M</td>
+            <td>100M</td>
+        </tr>
+    </table>
+    <h3 style="font-weight: bold">All other staff:</h3>
+    <table style="width: 100%;  margin-left: 15px; background-color: #fcfbf8; font-size: 25px" border="0">
+        <tr>
+            <th>Level 1</th>
+            <th>Level 2</th>
+            <th>Level 3</th>
+            <th>Level 4</th>
+            <th>Level 5</th>
+        </tr>
+        <tr>
+            <td>10</td>
+            <td>20M</td>
+            <td>30M</td>
+            <td>40M</td>
+            <td>50M</td>
+        </tr>
+    </table>
+    <hr>
+    <h1>Facilities Budget: {{facilities_budget}}</h1>
+    <h2>Upgrade</h2>
+    <table style="width: 100%;  margin-left: 15px; background-color: #fcfbf8;" border="0">
+        <tr>
+            <td>
+                <form action="{% url 'staff-upgrade' %}" method="POST">
+                    {% csrf_token %}
+
+                    <select id="staff" name="staff" style="font-size: 30px; height: 60px; width: 325px; border-radius: 10px">
+                        <option value="scout">Scout</option>
+                        <option value="dof">Director of Football</option>
+                        <option value="assistant_manager">Assistant Manager</option>
+                        <option value="gk_coach">Goalkeeping Coach</option>
+                        <option value="def_coach">Defending Coach</option>
+                        <option value="mid_coach">Midfield Coach</option>
+                        <option value="att_coach">Attacking Coach</option>
+                        <option value="set_piece_coach">Set Piece Coach</option>
+                    </select>
+                    <p style="color: red; font-size: 25px">Warning: A staff upgrade cannot be reverted.</p>
+                    <button class="btn btn-dark" type="submit" style="font-size: 25px">Submit</button>
+                </form>
+            </td>
+        </tr>
+    </table>
+{% endblock content %}

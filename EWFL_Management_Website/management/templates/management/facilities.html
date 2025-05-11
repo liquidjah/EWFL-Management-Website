@@ -1,0 +1,62 @@
+{% extends "management/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <h1>Upgrade Facilities</h1>
+    <hr>
+    <h2>Current Facility Levels</h2>
+    <table style="width: 100%;  margin-left: 15px; background-color: #fcfbf8; font-size: 25px" border="0">
+        <tr>
+            <th>Scout</th>
+            <th>Director of Football</th>
+            <th>Assistant Manager</th>
+            <th>Goalkeeping Coach</th>
+        </tr>
+        <tr>
+            <td>Level {{stadium}}</td>
+            <td>Level {{training_facilities}}</td>
+            <td>Level {{youth_academy}}</td>
+            <td>Level {{merchandise}}</td>
+        </tr>
+    </table>
+    <hr>
+    <h2>Upgrade Costs</h2>
+    <h3 style="font-weight: bold">Stadium: 5M per 1000 seats</h3>
+    <h3>All other facilities:</h3>
+    <table style="width: 100%;  margin-left: 15px; background-color: #fcfbf8; font-size: 25px" border="0">
+        <tr>
+            <th>Level 1</th>
+            <th>Level 2</th>
+            <th>Level 3</th>
+            <th>Level 4</th>
+            <th>Level 5</th>
+        </tr>
+        <tr>
+            <td>FREE</td>
+            <td>10M</td>
+            <td>80M</td>
+            <td>150M</td>
+            <td>200M</td>
+        </tr>
+    </table>
+    <hr>
+    <h1>Facilities Budget: {{facilities_budget}}M</h1>
+    <h2>Upgrade</h2>
+    <table style="width: 100%;  margin-left: 15px; background-color: #fcfbf8;" border="0">
+        <tr>
+            <td>
+                <form action="{% url 'facilities-upgrade' %}" method="POST">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                    <select id="facility" name="facility" style="font-size: 30px; height: 60px; width: 275px; border-radius: 10px">
+                        <option value="stadium">Stadium</option>
+                        <option value="training">Training Facilities</option>
+                        <option value="youth">Youth Academy</option>
+                        <option value="merchandise">Merchandise</option>
+                    </select>
+                    <p style="color: red; font-size: 25px">Warning: A facilities upgrade cannot be reverted.</p>
+                    <button class="btn btn-dark" type="submit" style="font-size: 25px">Submit</button>
+                </form>
+            </td>
+        </tr>
+    </table>
+{% endblock content %}

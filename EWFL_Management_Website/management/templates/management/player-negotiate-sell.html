@@ -1,0 +1,14 @@
+{% extends "management/base.html" %}
+{% block content %}
+    <form action="{% url 'player-negotiate-sell-confirmed' %}" method="POST">
+        {% csrf_token %}
+        <label for="value">Select offer:</label>
+        <select id="value" name="value">
+            {% for v in values %}
+                <option value={{v}}>{{v}}</option>
+            {% endfor %}
+        </select>
+        <input type="hidden" name="player_id" value="{{ player_id }}">
+        <button type="submit">Submit</button>
+    </form>
+{% endblock content %}

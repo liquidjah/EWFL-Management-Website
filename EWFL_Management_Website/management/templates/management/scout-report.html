@@ -1,0 +1,60 @@
+{% extends "management/base.html" %}
+{% block content %}
+    <h1>Scout Report</h1>
+        <table style="width: 100%" border="2">
+            <tr>
+                <th>Position</th>
+                <th>Name</th>
+                <th>Age</th>
+                <th>Overall</th>
+                <th>Potential</th>
+                <th>Nationality</th>
+                <th>Tactic</th>
+                <th>Wage</th>
+                <th>Contract Length</th>
+                <th>Skill Points</th>
+                <th>Value</th>
+            </tr>
+        {% for player in players %}
+            <tr>
+                <td>{{player.position}}</td>
+                <td>{{player.name}}</td>
+                <td>{{player.age}}</td>
+                <td>{{player.overall}}</td>
+                <td>{{player.potential}}</td>
+                <td>{{player.nationality}}</td>
+                <td>{{player.tactic}}</td>
+                <td>{{player.wage}}</td>
+                <td>{{player.contract_length}}</td>
+                <td>{{player.skill_points}}</td>
+                <td>{{player.value}}M</td>
+                <td>{{player.id}}</td>
+                <td>
+                    <form action="{% url 'signed-player' %}" method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="player_id" value="{{ player.pk }}">
+                        <button class="btn btn-sm btn-dark" type="submit">Sign</button>
+                    </form>
+                </td>
+                <td><form action="{% url 'player-negotiate-buy' %}" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="player_id" value="{{ player.pk }}">
+                    <button class="btn btn-sm btn-secondary" type="submit">Negotiate</button>
+                </form></td>
+                {% if player.can_be_loaned and not player.loaned %}
+                <td>
+                    <form action="{% url 'loan-out-of-league-player' %}" method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="player_id" value="{{ player.pk }}">
+                        <button class="btn btn-sm btn-dark" type="submit">Loan</button>
+                    </form>
+                </td>
+                {% else %}
+                <td>
+                    N/A
+                </td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+        </table>
+{% endblock content %}

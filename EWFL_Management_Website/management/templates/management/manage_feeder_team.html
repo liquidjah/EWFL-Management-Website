@@ -1,0 +1,60 @@
+{% extends "management/base.html" %}
+{% block content %}
+    <h1>{{team_name}}</h1>
+    <h2>Roster</h2>
+    <table style="width: 100%;  margin-left: 15px; border-collapse: separate; border-spacing: 0 30px;">
+        <tr>
+            <th>Position</th>
+            <th>Name</th>
+            <th>Age</th>
+            <th>Overall</th>
+            <th>Potential</th>
+            <th>Nationality</th>
+            <th>Tactic</th>
+            <th>Wage</th>
+            <th>Contract Length</th>
+            <th>Skill Points</th>
+        </tr>
+    {% for player in players %}
+        {% if player.loaned != 'out' and not player.free_agent %}
+        <tr>
+            <td>{{player.position}}</td>
+            <td><a class="link-dark" href="{% url 'player-detail' player.pk %}">{{player.name}}</a><a class="btn btn-dark btn-sm" style="margin-left: 5px; font-size: 10px; padding: 2px 5px" href="{% url 'player-update' player.pk %}">✎</a></td>
+            <td>{{player.age}}</td>
+            <td>{{player.overall}}</td>
+            <td>{{player.potential}}</td>
+            <td>{{player.nationality}}</td>
+            <td>{{player.tactic}}</td>
+            <td>
+                {{player.wage}}
+                <form action="{% url 'offer-contract' %}" style="display: inline" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="player_id" value="{{ player.pk }}">
+                <button class="btn btn-sm btn-dark" style="display: inline-block; font-size: 10px; padding: 2px 5px; margin-left: 5px;" type="submit">✎</button>
+                </form>
+            </td>
+            <td>{{player.contract_length}}</td>
+            <td>{{player.skill_points}}</td>
+        {% if player.loaned == 'out' and player.loaned_to == team_name %}
+            <td style="color: forestgreen">LOANED IN</td>
+        {% endif %}
+        {% if player.loaned == 'out' and player.loaned_to != team_name %}
+            <td style="color: red">LOANED OUT</td>
+        {% endif %}
+        {% endif %}
+        </tr>
+    {% endfor %}
+    </table>
+    {% if team_type == "women" %}
+        <hr>
+        <h1>Team Level: {{team_level}}</h1>
+        <hr>
+        <h1>Team Options</h1>
+        <form action="{% url 'invest-in-womens-team' %}" style="display: inline" method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="team_name" value="{{ team_name }}">
+            <input name="amount" type="number" step="1" min="1" placeholder="Amount" class="form-control-lg" style="margin-left: 15px">
+            <button class="btn btn-dark" style="display: inline-block; font-size: 25px; margin-left: 15px;" type="submit">Invest</button>
+        </form>
+    {% endif %}
+{% endblock content %}

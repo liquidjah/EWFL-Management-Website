@@ -1,0 +1,26 @@
+{% extends "management/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <div class="content-section">
+        <form class="form-inline" action="{% url 'change-facilities-budget' %}" method="POST">
+            {% csrf_token %}
+            <fieldset>
+                <legend class="border-bottom mb-4">Change Facilities Budget</legend>
+                {{ form|crispy }}
+            </fieldset>
+            <div class="form-group mb-2">
+                    <input name="amount" type="number" step="0.5" placeholder="Amount" class="form-control-lg">
+                <br>
+                <br>
+                <select name="team" id="team"  class="form-control-lg">
+                    {% for i in teams %}
+                        <option value="{{i.id}}" class="form-control-lg">{{i.name}}</option>
+                    {% endfor %}
+                </select>
+                <br>
+                <br>
+                <button class="btn btn-dark" type="submit">Submit</button>
+            </div>
+        </form>
+    </div>
+{% endblock content %}

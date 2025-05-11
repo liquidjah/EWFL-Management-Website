@@ -1,0 +1,683 @@
+{% extends "management/base.html" %}
+{% block content %}
+  <h1>{{ object.name }}</h1>
+  <hr>
+  <h1>{{ object.nationality }}</h1>
+  <h1>{{ object.sex }}</h1>
+  <h1>Age: {{ object.age }}</h1>
+  <hr>
+  <h1>{{ object.position }}</h1>
+  <h1>Preferred Tactic: {{ object.tactic }}</h1>
+  <hr>
+  <h1>Overall: {{ object.overall }}</h1>
+  <h1>Potential: {{ object.potential }}</h1>
+  <hr>
+  <h1>Wage: {{ object.wage }}</h1>
+  <h1>Contract Length: {{ object.contract_length }}</h1>
+  <hr>
+  <h1>Skill Points: {{object.skill_points}}</h1>
+  <hr>
+  <h1>Career Goals: {{ object.goals }}</h1>
+  <h1>Career Assists: {{ object.assists }}</h1>
+  <h1>Career MOTM: {{ object.assists }}</h1>
+  <hr>
+  <h1>Transfer Options</h1>
+  <table style="width: 100%;  margin-left: 15px; background-color: #fcfbf8;" border="0">
+    {% if object.loaned == 'out' %}
+    <td><form action="{% url 'recall-loan' %}" method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="player_id" value="{{ object.pk }}">
+        <button class="btn btn-danger" style="font-size: 25px" type="submit">Recall</button>
+    </form></td>
+    {% endif %}
+    {% if object.loaned != "out" and not object.out_of_league_loan %}
+    <tr>
+      <td><form action="{% url 'player-negotiate-sell' %}" method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="player_id" value="{{ object.pk }}">
+        <button class="btn btn-danger" style="font-size: 25px" type="submit">Sell</button>
+      </form></td>
+      {% if object.feeder_team == None or object.feeder_team == '' %}
+      <td><form action="{% url 'send-to-feeder-team' %}" method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="player_id" value="{{ object.pk }}">
+        <select id="team_name" name="team_name" style="font-size: 30px; height: 60px; width: 275px; border-radius: 10px">
+        {% for i in feeder_teams %}
+          <option value="{{i.name}}">{{i.name}}</option>
+        {% endfor %}
+        </select>
+        <button class="btn btn-dark" style="font-size: 25px" type="submit">Demote</button>
+      </form></td>
+      {% else %}
+      <td><form action="{% url 'promote-to-senior-team' %}" method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="player_id" value="{{ object.pk }}">
+        <button class="btn btn-dark" type="submit">Promote</button>
+      </form></td>
+      {% endif %}
+    </tr>
+  </table>
+  <hr>
+  <h1>Training Information</h1>
+  <table style="width: 100%;  margin-left: 15px; background-color: #fcfbf8;" border="0">
+    <tr>
+      <td><form action="{% url 'train-position' %}" method="POST">
+        {% csrf_token %}
+
+        <label for="training_position" style="font-size: 25px">Train Position:</label>
+        <select id="training_position" name="training_position" style="font-size: 30px; height: 60px; width: 275px; border-radius: 10px">
+            <option value="GK">GK</option>
+            <option value="LWB">LWB</option>
+            <option value="LB">LB</option>
+            <option value="CB">CB</option>
+            <option value="RB">RB</option>
+            <option value="RWB">RWB</option>
+            <option value="CDM">CDM</option>
+            <option value="CM">CM</option>
+            <option value="CAM">CAM</option>
+            <option value="LM">LM</option>
+            <option value="RM">RM</option>
+            <option value="LW">LW</option>
+            <option value="RW">RW</option>
+            <option value="CF">CF</option>
+            <option value="ST">ST</option>
+        </select>
+
+        <input type="hidden" name="player_id" value="{{ object.pk }}">
+        <button class="btn btn-dark" type="submit">Submit</button>
+    </form></td>
+    <td><form action="{% url 'train-tactic' %}" method="POST">
+        {% csrf_token %}
+
+        <label style="font-size: 25px" for="training_tactic">Train Tactic:</label>
+        <select id="training_tactic" name="training_tactic" style="font-size: 30px; height: 60px; width: 275px; border-radius: 10px">
+            <option value="Balanced">Balanced</option>
+            <option value="Catenaccio">Catenaccio</option>
+            <option value="Gegennaccio">Gegennaccio</option>
+            <option value="Route One">Route One</option>
+            <option value="Counter-Attack">Counter-Attack</option>
+            <option value="Control Possession">Control Possession</option>
+            <option value="Gegenpress">Gegenpress</option>
+            <option value="Tiki-Taka">Tiki-Taka</option>
+            <option value="Wing Play">Wing Play</option>
+        </select>
+
+        <input type="hidden" name="player_id" value="{{ object.pk }}">
+        <button class="btn btn-dark" type="submit">Submit</button>
+    </form></td>
+    </tr>
+  </table>
+  {% if object.training %}
+    <table>
+      <tr>
+        <td>
+        <table style="width: 100%;  margin-left: 15px; background-color: #fcfbf8;" border="0">
+          <tr>
+            <th>Position</th>
+            <th>Time Left</th>
+          </tr>
+          <tr>
+            <td>{{object.training_position}}</td>
+            <td>{{object.training_position_time}} weeks</td>
+          </tr>
+        </table>
+        </td>
+        <td></td>
+        <td></td>
+        <td>
+        <table style="width: 100%;  margin-left: 15px; background-color: #fcfbf8;" border="0">
+          <tr>
+            <th>Tactic</th>
+            <th>Time Left</th>
+          </tr>
+          <tr>
+            <td>{{object.training_tactic}}</td>
+            <td>{{object.training_tactic_time}} weeks</td>
+          </tr>
+        </table>
+        </td>
+      </tr>
+    </table>
+  {% endif %}
+  <hr>
+  {% endif %}
+  {% if object.loaned != 'out' %}
+  <h1>Skill Tree</h1>
+  <table style="margin-left: auto; margin-right: auto; width: 80%;">
+    <tr>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td style="text-align: center;">
+        <form action="{% url 'add-trait' %}" method="POST">
+          {% csrf_token %}
+          <input type="hidden" name="player_id" value="{{ object.pk }}">
+          <input type="hidden" name="trait" value="Deus">
+          <input type="hidden" name="cost" value="30">
+          {% if 'Deus' not in object.traits %}
+            <button class="btn btn-sm btn-secondary" type="submit">Deus</button>
+          {% else %}
+            <button class="btn btn-sm btn-success" type="submit">Deus</button>
+          {% endif %}
+        </form>
+      </td>
+    </tr>
+    <tr>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td style="text-align: center; padding: 20px">
+        <form action="{% url 'add-trait' %}" method="POST">
+          {% csrf_token %}
+          <input type="hidden" name="player_id" value="{{ object.pk }}">
+          <input type="hidden" name="trait" value="Medietas">
+          <input type="hidden" name="cost" value="25">
+          {% if 'Medietas' not in object.traits %}
+            <button class="btn btn-sm btn-secondary" type="submit">Medietas</button>
+          {% else %}
+            <button class="btn btn-sm btn-success" type="submit">Medietas</button>
+          {% endif %}
+        </form>
+      </td>
+    </tr>
+    <tr>
+      <td></td>
+      <td></td>
+      <td style="text-align: center; padding: 20px">
+        <form action="{% url 'add-trait' %}" method="POST">
+          {% csrf_token %}
+          <input type="hidden" name="player_id" value="{{ object.pk }}">
+          <input type="hidden" name="trait" value="Vindicta">
+          <input type="hidden" name="cost" value="20">
+          {% if 'Vindicta' not in object.traits %}
+            <button class="btn btn-sm btn-secondary" type="submit">Vindicta</button>
+          {% else %}
+            <button class="btn btn-sm btn-success" type="submit">Vindicta</button>
+          {% endif %}
+        </form>
+      </td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td style="text-align: center; padding: 20px">
+        <form action="{% url 'add-trait' %}" method="POST">
+          {% csrf_token %}
+          <input type="hidden" name="player_id" value="{{ object.pk }}">
+          <input type="hidden" name="trait" value="Auxilior">
+          <input type="hidden" name="cost" value="20">
+          {% if 'Auxilior' not in object.traits %}
+            <button class="btn btn-sm btn-secondary" type="submit">Auxilior</button>
+          {% else %}
+            <button class="btn btn-sm btn-success" type="submit">Auxilior</button>
+          {% endif %}
+        </form>
+      </td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td style="text-align: center; padding: 20px">
+        <form action="{% url 'add-trait' %}" method="POST">
+          {% csrf_token %}
+          <input type="hidden" name="player_id" value="{{ object.pk }}">
+          <input type="hidden" name="trait" value="Impetus">
+          <input type="hidden" name="cost" value="20">
+          {% if 'Impetus' not in object.traits %}
+            <button class="btn btn-sm btn-secondary" type="submit">Impetus</button>
+          {% else %}
+            <button class="btn btn-sm btn-success" type="submit">Impetus</button>
+          {% endif %}
+        </form>
+      </td>
+    </tr>
+    <tr>
+      <td></td>
+      <td></td>
+      <td style="text-align: center; padding: 20px">
+        <form action="{% url 'add-trait' %}" method="POST">
+          {% csrf_token %}
+          <input type="hidden" name="player_id" value="{{ object.pk }}">
+          <input type="hidden" name="trait" value="Guardian">
+          <input type="hidden" name="cost" value="15">
+          {% if 'Guardian' not in object.traits %}
+            <button class="btn btn-sm btn-secondary" type="submit">Guardian</button>
+          {% else %}
+            <button class="btn btn-sm btn-success" type="submit">Guardian</button>
+          {% endif %}
+        </form>
+      </td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td style="text-align: center; padding: 20px">
+        <form action="{% url 'add-trait' %}" method="POST">
+          {% csrf_token %}
+          <input type="hidden" name="player_id" value="{{ object.pk }}">
+          <input type="hidden" name="trait" value="Maestro">
+          <input type="hidden" name="cost" value="15">
+          {% if 'Maestro' not in object.traits %}
+            <button class="btn btn-sm btn-secondary" type="submit">Maestro</button>
+          {% else %}
+            <button class="btn btn-sm btn-success" type="submit">Maestro</button>
+          {% endif %}
+        </form>
+      </td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td style="text-align: center; padding: 20px">
+        <form action="{% url 'add-trait' %}" method="POST">
+          {% csrf_token %}
+          <input type="hidden" name="player_id" value="{{ object.pk }}">
+          <input type="hidden" name="trait" value="Gunslinger">
+          <input type="hidden" name="cost" value="15">
+          {% if 'Gunslinger' not in object.traits %}
+            <button class="btn btn-sm btn-secondary" type="submit">Gunslinger</button>
+          {% else %}
+            <button class="btn btn-sm btn-success" type="submit">Gunslinger</button>
+          {% endif %}
+        </form>
+      </td>
+    </tr>
+    <tr>
+      <td>
+      </td>
+      <td></td>
+      <td style="text-align: center; padding: 20px">
+        <form action="{% url 'add-trait' %}" method="POST">
+          {% csrf_token %}
+          <input type="hidden" name="player_id" value="{{ object.pk }}">
+          <input type="hidden" name="trait" value="2-Way">
+          <input type="hidden" name="cost" value="10">
+          {% if '2-Way' not in object.traits %}
+            <button class="btn btn-sm btn-secondary" type="submit">2-Way</button>
+          {% else %}
+            <button class="btn btn-sm btn-success" type="submit">2-Way</button>
+          {% endif %}
+        </form>
+      </td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td style="text-align: center; padding: 20px">
+        <form action="{% url 'add-trait' %}" method="POST">
+          {% csrf_token %}
+          <input type="hidden" name="player_id" value="{{ object.pk }}">
+          <input type="hidden" name="trait" value="Visionary">
+          <input type="hidden" name="cost" value="10">
+          {% if 'Visionary' not in object.traits %}
+            <button class="btn btn-sm btn-secondary" type="submit">Visionary</button>
+          {% else %}
+            <button class="btn btn-sm btn-success" type="submit">Visionary</button>
+          {% endif %}
+        </form>
+      </td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td style="text-align: center; padding: 20px">
+        <form action="{% url 'add-trait' %}" method="POST">
+          {% csrf_token %}
+          <input type="hidden" name="player_id" value="{{ object.pk }}">
+          <input type="hidden" name="trait" value="Silencer">
+          <input type="hidden" name="cost" value="10">
+          {% if 'Silencer' not in object.traits %}
+            <button class="btn btn-sm btn-secondary" type="submit">Silencer</button>
+          {% else %}
+            <button class="btn btn-sm btn-success" type="submit">Silencer</button>
+          {% endif %}
+        </form>
+      </td>
+    </tr>
+    <tr>
+      <td></td>
+      <td style="text-align: center; padding: 20px">
+        <form action="{% url 'add-trait' %}" method="POST">
+          {% csrf_token %}
+          <input type="hidden" name="player_id" value="{{ object.pk }}">
+          <input type="hidden" name="trait" value="King">
+          <input type="hidden" name="cost" value="10">
+          {% if 'King' not in object.traits %}
+            <button class="btn btn-sm btn-secondary" type="submit">King</button>
+          {% else %}
+            <button class="btn btn-sm btn-success" type="submit">King</button>
+          {% endif %}
+        </form>
+      </td>
+      <td></td>
+      <td style="text-align: center; padding: 20px">
+        <form action="{% url 'add-trait' %}" method="POST">
+          {% csrf_token %}
+          <input type="hidden" name="player_id" value="{{ object.pk }}">
+          <input type="hidden" name="trait" value="Keeper">
+          <input type="hidden" name="cost" value="10">
+          {% if 'Keeper' not in object.traits %}
+            <button class="btn btn-sm btn-secondary" type="submit">Keeper</button>
+          {% else %}
+            <button class="btn btn-sm btn-success" type="submit">Keeper</button>
+          {% endif %}
+        </form>
+      </td>
+      <td></td>
+      <td style="text-align: center; padding: 20px">
+        <form action="{% url 'add-trait' %}" method="POST">
+          {% csrf_token %}
+          <input type="hidden" name="player_id" value="{{ object.pk }}">
+          <input type="hidden" name="trait" value="Swinger">
+          <input type="hidden" name="cost" value="10">
+          {% if 'Swinger' not in object.traits %}
+            <button class="btn btn-sm btn-secondary" type="submit">Swinger</button>
+          {% else %}
+            <button class="btn btn-sm btn-success" type="submit">Swinger</button>
+          {% endif %}
+        </form>
+      </td>
+      <td></td>
+      <td style="text-align: center; padding: 20px">
+        <form action="{% url 'add-trait' %}" method="POST">
+          {% csrf_token %}
+          <input type="hidden" name="player_id" value="{{ object.pk }}">
+          <input type="hidden" name="trait" value="Sleeper">
+          <input type="hidden" name="cost" value="10">
+          {% if 'Sleeper' not in object.traits %}
+            <button class="btn btn-sm btn-secondary" type="submit">Sleeper</button>
+          {% else %}
+            <button class="btn btn-sm btn-success" type="submit">Sleeper</button>
+          {% endif %}
+        </form>
+      </td>
+      <td></td>
+      <td style="text-align: center; padding: 20px">
+        <form action="{% url 'add-trait' %}" method="POST">
+          {% csrf_token %}
+          <input type="hidden" name="player_id" value="{{ object.pk }}">
+          <input type="hidden" name="trait" value="Big Game Player">
+          <input type="hidden" name="cost" value="10">
+          {% if 'Big Game Player' not in object.traits %}
+            <button class="btn btn-sm btn-secondary" type="submit">Big Game Player</button>
+          {% else %}
+            <button class="btn btn-sm btn-success" type="submit">Big Game Player</button>
+          {% endif %}
+        </form>
+      </td>
+      <td></td>
+      <td style="text-align: center; padding: 20px">
+        <form action="{% url 'add-trait' %}" method="POST">
+          {% csrf_token %}
+          <input type="hidden" name="player_id" value="{{ object.pk }}">
+          <input type="hidden" name="trait" value="Super Sub">
+          <input type="hidden" name="cost" value="10">
+          {% if 'Super Sub' not in object.traits %}
+            <button class="btn btn-sm btn-secondary" type="submit">Super Sub</button>
+          {% else %}
+            <button class="btn btn-sm btn-success" type="submit">Super Sub</button>
+          {% endif %}
+        </form>
+      </td>
+    </tr>
+    <tr>
+      <td></td>
+      <td style="text-align: center; padding: 20px">
+        <form action="{% url 'add-trait' %}" method="POST">
+          {% csrf_token %}
+          <input type="hidden" name="player_id" value="{{ object.pk }}">
+          <input type="hidden" name="trait" value="Wall">
+          <input type="hidden" name="cost" value="10">
+          {% if 'Wall' not in object.traits %}
+            <button class="btn btn-sm btn-secondary" type="submit">Wall</button>
+          {% else %}
+            <button class="btn btn-sm btn-success" type="submit">Wall</button>
+          {% endif %}
+        </form>
+      </td>
+      <td></td>
+      <td style="text-align: center; padding: 20px">
+        <form action="{% url 'add-trait' %}" method="POST">
+          {% csrf_token %}
+          <input type="hidden" name="player_id" value="{{ object.pk }}">
+          <input type="hidden" name="trait" value="Engine">
+          <input type="hidden" name="cost" value="10">
+          {% if 'Engine' not in object.traits %}
+            <button class="btn btn-sm btn-secondary" type="submit">Engine</button>
+          {% else %}
+            <button class="btn btn-sm btn-success" type="submit">Engine</button>
+          {% endif %}
+        </form>
+      </td>
+      <td></td>
+      <td style="text-align: center; padding: 20px">
+        <form action="{% url 'add-trait' %}" method="POST">
+          {% csrf_token %}
+          <input type="hidden" name="player_id" value="{{ object.pk }}">
+          <input type="hidden" name="trait" value="Leader">
+          <input type="hidden" name="cost" value="10">
+          {% if 'Leader' not in object.traits %}
+            <button class="btn btn-sm btn-secondary" type="submit">Leader</button>
+          {% else %}
+            <button class="btn btn-sm btn-success" type="submit">Leader</button>
+          {% endif %}
+        </form>
+      </td>
+      <td></td>
+      <td style="text-align: center; padding: 20px">
+        <form action="{% url 'add-trait' %}" method="POST">
+          {% csrf_token %}
+          <input type="hidden" name="player_id" value="{{ object.pk }}">
+          <input type="hidden" name="trait" value="Late Bloomer">
+          <input type="hidden" name="cost" value="10">
+          {% if 'Late Bloomer' not in object.traits %}
+            <button class="btn btn-sm btn-secondary" type="submit">Late Bloomer</button>
+          {% else %}
+            <button class="btn btn-sm btn-success" type="submit">Late Bloomer</button>
+          {% endif %}
+        </form>
+      </td>
+      <td></td>
+      <td style="text-align: center; padding: 20px">
+        <form action="{% url 'add-trait' %}" method="POST">
+          {% csrf_token %}
+          <input type="hidden" name="player_id" value="{{ object.pk }}">
+          <input type="hidden" name="trait" value="Headliner">
+          <input type="hidden" name="cost" value="10">
+          {% if 'Headliner' not in object.traits %}
+            <button class="btn btn-sm btn-secondary" type="submit">Headliner</button>
+          {% else %}
+            <button class="btn btn-sm btn-success" type="submit">Headliner</button>
+          {% endif %}
+        </form>
+      </td>
+      <td></td>
+      <td style="text-align: center; padding: 20px">
+        <form action="{% url 'add-trait' %}" method="POST">
+          {% csrf_token %}
+          <input type="hidden" name="player_id" value="{{ object.pk }}">
+          <input type="hidden" name="trait" value="Clutch Pro">
+          <input type="hidden" name="cost" value="10">
+          {% if 'Clutch Pro' not in object.traits %}
+            <button class="btn btn-sm btn-secondary" type="submit">Clutch Pro</button>
+          {% else %}
+            <button class="btn btn-sm btn-success" type="submit">Clutch Pro</button>
+          {% endif %}
+        </form>
+      </td>
+    </tr>
+    <tr>
+      <td></td>
+      <td style="text-align: center; padding: 20px">
+        <form action="{% url 'add-trait' %}" method="POST">
+          {% csrf_token %}
+          <input type="hidden" name="player_id" value="{{ object.pk }}">
+          <input type="hidden" name="trait" value="Underdog">
+          <input type="hidden" name="cost" value="10">
+          {% if 'Underdog' not in object.traits %}
+            <button class="btn btn-sm btn-secondary" type="submit">Underdog</button>
+          {% else %}
+            <button class="btn btn-sm btn-success" type="submit">Underdog</button>
+          {% endif %}
+        </form>
+      </td>
+      <td></td>
+      <td style="text-align: center; padding: 20px">
+        <form action="{% url 'add-trait' %}" method="POST">
+          {% csrf_token %}
+          <input type="hidden" name="player_id" value="{{ object.pk }}">
+          <input type="hidden" name="trait" value="Ironclad">
+          <input type="hidden" name="cost" value="10">
+          {% if 'Ironclad' not in object.traits %}
+            <button class="btn btn-sm btn-secondary" type="submit">Ironclad</button>
+          {% else %}
+            <button class="btn btn-sm btn-success" type="submit">Ironclad</button>
+          {% endif %}
+        </form>
+      </td>
+      <td></td>
+      <td style="text-align: center; padding: 20px">
+        <form action="{% url 'add-trait' %}" method="POST">
+          {% csrf_token %}
+          <input type="hidden" name="player_id" value="{{ object.pk }}">
+          <input type="hidden" name="trait" value="Artist">
+          <input type="hidden" name="cost" value="10">
+          {% if 'Artist' not in object.traits %}
+            <button class="btn btn-sm btn-secondary" type="submit">Artist</button>
+          {% else %}
+            <button class="btn btn-sm btn-success" type="submit">Artist</button>
+          {% endif %}
+        </form>
+      </td>
+      <td></td>
+      <td style="text-align: center; padding: 20px">
+        <form action="{% url 'add-trait' %}" method="POST">
+          {% csrf_token %}
+          <input type="hidden" name="player_id" value="{{ object.pk }}">
+          <input type="hidden" name="trait" value="Einstein">
+          <input type="hidden" name="cost" value="10">
+          {% if 'Einstein' not in object.traits %}
+            <button class="btn btn-sm btn-secondary" type="submit">Einstein</button>
+          {% else %}
+            <button class="btn btn-sm btn-success" type="submit">Einstein</button>
+          {% endif %}
+        </form>
+      </td>
+      <td></td>
+      <td style="text-align: center; padding: 20px">
+        <form action="{% url 'add-trait' %}" method="POST">
+          {% csrf_token %}
+          <input type="hidden" name="player_id" value="{{ object.pk }}">
+          <input type="hidden" name="trait" value="Merchant">
+          <input type="hidden" name="cost" value="10">
+          {% if 'Merchant' not in object.traits %}
+            <button class="btn btn-sm btn-secondary" type="submit">Merchant</button>
+          {% else %}
+            <button class="btn btn-sm btn-success" type="submit">Merchant</button>
+          {% endif %}
+        </form>
+      </td>
+      <td></td>
+      <td style="text-align: center; padding: 20px">
+        <form action="{% url 'add-trait' %}" method="POST">
+          {% csrf_token %}
+          <input type="hidden" name="player_id" value="{{ object.pk }}">
+          <input type="hidden" name="trait" value="Seller">
+          <input type="hidden" name="cost" value="10">
+          {% if 'Seller' not in object.traits %}
+            <button class="btn btn-sm btn-secondary" type="submit">Seller</button>
+          {% else %}
+            <button class="btn btn-sm btn-success" type="submit">Seller</button>
+          {% endif %}
+        </form>
+      </td>
+    </tr>
+    <tr>
+      <td></td>
+      <td style="text-align: center; padding: 20px">
+        <form action="{% url 'add-trait' %}" method="POST">
+          {% csrf_token %}
+          <input type="hidden" name="player_id" value="{{ object.pk }}">
+          <input type="hidden" name="trait" value="Jester">
+          <input type="hidden" name="cost" value="5">
+          {% if 'Jester' not in object.traits %}
+            <button class="btn btn-sm btn-secondary" type="submit">Jester</button>
+          {% else %}
+            <button class="btn btn-sm btn-success" type="submit">Jester</button>
+          {% endif %}
+        </form>
+      </td>
+      <td></td>
+      <td style="text-align: center; padding: 20px">
+        <form action="{% url 'add-trait' %}" method="POST">
+          {% csrf_token %}
+          <input type="hidden" name="player_id" value="{{ object.pk }}">
+          <input type="hidden" name="trait" value="Fresh">
+          <input type="hidden" name="cost" value="5">
+          {% if 'Fresh' not in object.traits %}
+            <button class="btn btn-sm btn-secondary" type="submit">Fresh</button>
+          {% else %}
+            <button class="btn btn-sm btn-success" type="submit">Fresh</button>
+          {% endif %}
+        </form>
+      </td>
+      <td></td>
+      <td style="text-align: center; padding: 20px">
+        <form action="{% url 'add-trait' %}" method="POST">
+          {% csrf_token %}
+          <input type="hidden" name="player_id" value="{{ object.pk }}">
+          <input type="hidden" name="trait" value="Receba">
+          <input type="hidden" name="cost" value="5">
+          {% if 'Receba' not in object.traits %}
+            <button class="btn btn-sm btn-secondary" type="submit">Receba</button>
+          {% else %}
+            <button class="btn btn-sm btn-success" type="submit">Receba</button>
+          {% endif %}
+        </form>
+      </td>
+      <td></td>
+      <td style="text-align: center; padding: 20px">
+        <form action="{% url 'add-trait' %}" method="POST">
+          {% csrf_token %}
+          <input type="hidden" name="player_id" value="{{ object.pk }}">
+          <input type="hidden" name="trait" value="Gift-Giver">
+          <input type="hidden" name="cost" value="5">
+          {% if 'Gift-Giver' not in object.traits %}
+            <button class="btn btn-sm btn-secondary" type="submit">Gift-Giver</button>
+          {% else %}
+            <button class="btn btn-sm btn-success" type="submit">Gift-Giver</button>
+          {% endif %}
+        </form>
+      </td>
+      <td></td>
+      <td style="text-align: center; padding: 20px">
+        <form action="{% url 'add-trait' %}" method="POST">
+          {% csrf_token %}
+          <input type="hidden" name="player_id" value="{{ object.pk }}">
+          <input type="hidden" name="trait" value="Statpadder">
+          <input type="hidden" name="cost" value="5">
+          {% if 'Statpadder' not in object.traits %}
+            <button class="btn btn-sm btn-secondary" type="submit">Statpadder</button>
+          {% else %}
+            <button class="btn btn-sm btn-success" type="submit">Statpadder</button>
+          {% endif %}
+        </form>
+      </td>
+      <td></td>
+      <td style="text-align: center; padding: 20px">
+        <form action="{% url 'add-trait' %}" method="POST">
+          {% csrf_token %}
+          <input type="hidden" name="player_id" value="{{ object.pk }}">
+          <input type="hidden" name="trait" value="Speed Demon">
+          <input type="hidden" name="cost" value="5">
+          {% if 'Speed Demon' not in object.traits %}
+            <button class="btn btn-sm btn-secondary" type="submit">Speed Demon</button>
+          {% else %}
+            <button class="btn btn-sm btn-success" type="submit">Speed Demon</button>
+          {% endif %}
+        </form>
+      </td>
+    </tr>
+  </table>
+  {% endif %}
+{% endblock content %}

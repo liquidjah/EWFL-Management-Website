@@ -1,0 +1,344 @@
+{% extends "management/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <h1>Team Lineup & Tactics</h1>
+    <h2>Tactic</h2>
+    <form action="{% url 'set-tactic' %}" method="POST" style="display: inline-block">
+        {% csrf_token %}
+        <select name="tactic" id="tactic" class="form-control-lg" style="margin-left: 15px">
+            <option value="" class="form-control-lg" selected disabled hidden>{{team.tactic}}</option>
+            <option value="Balanced" class="form-control-lg">Balanced</option>
+            <option value="Catenaccio" class="form-control-lg">Catenaccio</option>
+            <option value="Gegennaccio" class="form-control-lg">Gegennaccio</option>
+            <option value="Route One" class="form-control-lg">Route One</option>
+            <option value="Counter-Attack" class="form-control-lg">Counter-Attack</option>
+            <option value="Control Possession" class="form-control-lg">Control Possession</option>
+            <option value="Tiki-Taka" class="form-control-lg">Tiki-Taka</option>
+            <option value="Gegenpress" class="form-control-lg">Gegenpress</option>
+            <option value="Wing Play" class="form-control-lg">Wing Play</option>
+        </select>
+        <button class="btn btn-dark" type="submit" style="font-size: 25px; margin-left: 15px">Set Tactic</button>
+    </form>
+    <br>
+    <br>
+    <h2>Mentality</h2>
+    <form action="{% url 'set-mentality' %}" method="POST" style="display: inline-block">
+        {% csrf_token %}
+        <select name="mentality" id="mentality" class="form-control-lg" style="margin-left: 15px">
+            <option value="" class="form-control-lg" selected disabled hidden>{{team.mentality}}</option>
+            <option value="Balanced" class="form-control-lg">Balanced</option>
+            <option value="Ultra Defensive" class="form-control-lg">Ultra Defensive</option>
+            <option value="Defensive" class="form-control-lg">Defensive</option>
+            <option value="Counter" class="form-control-lg">Counter</option>
+            <option value="Positive" class="form-control-lg">Positive</option>
+            <option value="Attacking" class="form-control-lg">Attacking</option>
+            <option value="Ultra Attacking" class="form-control-lg">Ultra Attacking</option>
+        </select>
+        <button class="btn btn-dark" type="submit" style="font-size: 25px; margin-left: 15px">Set Mentality</button>
+    </form>
+    <br>
+    <br>
+    <h2>Formation</h2>
+    <form action="{% url 'set-formation' %}" method="POST" style="display: inline-block">
+        {% csrf_token %}
+        <select name="formation" id="formation" class="form-control-lg" style="margin-left: 15px">
+          <option value="" class="form-control-lg" selected disabled hidden>{{team.formation}}</option>
+          <option value="4-4-2" class="form-control-lg">4-4-2</option>
+          <option value="4-2-3-1" class="form-control-lg">4-2-3-1</option>
+          <option value="4-3-3" class="form-control-lg">4-3-3</option>
+          <option value="4-5-1" class="form-control-lg">4-5-1</option>
+          <option value="4-2-2-2" class="form-control-lg">4-2-2-2</option>
+          <option value="4-2-4" class="form-control-lg">4-2-4</option>
+          <option value="4-4-1-1" class="form-control-lg">4-4-1-1</option>
+          <option value="4-1-2-1-2" class="form-control-lg">4-1-2-1-2</option>
+          <option value="3-4-3" class="form-control-lg">3-4-3</option>
+          <option value="3-5-2" class="form-control-lg">3-5-2</option>
+          <option value="5-3-2" class="form-control-lg">5-3-2</option>
+          <option value="5-2-3" class="form-control-lg">5-2-3</option>
+          <option value="5-4-1" class="form-control-lg">5-4-1</option>
+          <option value="5-2-1-2" class="form-control-lg">5-2-1-2</option>
+        </select>
+        <button class="btn btn-dark" type="submit" style="font-size: 25px; margin-left: 15px">Set Formation</button>
+    </form>
+    <hr>
+    <h1>Player Instructions</h1>
+    <form action="{% url 'player-instructions' %}" method="POST" style="display: inline">
+        {% csrf_token %}
+        <input type="hidden" name="player_id" value="{{ player_1.pk }}">
+        <select name="player_id" id="player-id" class="form-control-lg" style="margin-left: 15px">
+          <option value="" class="form-control-lg" selected disabled hidden>{{player_1.name}}</option>
+          {% for player in team_lineup %}
+            <option value="{{player.pk}}" class="form-control-lg">{{player.name}}</option>
+          {% endfor %}
+        </select>
+        <button class="btn btn-dark" style="font-size: 25px; margin-left: 15px" type="submit">Edit Instructions</button>
+    </form>
+    <br>
+    <br>
+    <hr>
+    <h1>Lineup Ratings</h1>
+        <table style="width: 100%;  margin-left: 10px;">
+            <tr>
+                <th style="font-size: 30px">Name</th>
+                <th style="font-size: 30px">Actual Position</th>
+                <th style="font-size: 30px">Lineup Position</th>
+                <th style="font-size: 30px">Actual Rating</th>
+                <th style="font-size: 30px">Lineup Rating</th>
+                <th style="font-size: 30px">Tactic</th>
+            </tr>
+            {% for player in team_lineup %}
+                <tr>
+                    <td>
+                        <h3>{{player.name}}</h3>
+                    </td>
+                    <td>
+                        <h3>{{player.position}}</h3>
+                    </td>
+                    <td>
+                        <h3>{{player.lineup_position}}</h3>
+                    </td>
+                    <td>
+                        <h3>{{player.overall}}</h3>
+                    </td>
+                    <td>
+                        {% if player.lineup_rating >= player.overall %}
+                            <h3 style="color: green">{{player.lineup_rating}}</h3>
+                        {% else %}
+                            <h3 style="color: red">{{player.lineup_rating}}</h3>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <h3>{{player.tactic}}</h3>
+                    </td>
+                </tr>
+            {% endfor %}
+            <tr>
+                <td style="font-size: 30px; font-weight: bold">Overall: </td>
+                <td style="font-size: 30px">{{lineup.overall}}</td>
+            </tr>
+        </table>
+    <hr>
+    <h1>Lineup</h1>
+    <form action="{% url 'set-lineup' %}" method="POST" >
+        {% csrf_token %}
+      <h2>{{position_1}}</h2>
+        <select name="player_1" id="player_1" class="form-control-lg" style="margin-left: 15px">
+          {% for player in players %}
+            <option value="" class="form-control-lg" selected disabled hidden>{{player_1.name}}</option>
+            <option value="{{player.pk}}" class="form-control-lg">{{player.position}} | {{player.name}} | [{{player.overall}}/{{player.potential}}]</option>
+          {% endfor %}
+        </select>
+      <br>
+      <br>
+    <h2>{{position_2}}</h2>
+        <select name="player_2" id="player_2" class="form-control-lg" style="margin-left: 15px">
+          {% for player in players %}
+            <option value="" class="form-control-lg" selected disabled hidden>{{player_2.name}}</option>
+            <option value="{{player.pk}}" class="form-control-lg">{{player.position}} | {{player.name}} | [{{player.overall}}/{{player.potential}}]</option>
+          {% endfor %}
+        </select>
+      <br>
+      <br>
+    <h2>{{position_3}}</h2>
+        <select name="player_3" id="player_3" class="form-control-lg" style="margin-left: 15px">
+          {% for player in players %}
+            <option value="" class="form-control-lg" selected disabled hidden>{{player_3.name}}</option>
+            <option value="{{player.pk}}" class="form-control-lg">{{player.position}} | {{player.name}} | [{{player.overall}}/{{player.potential}}]</option>
+          {% endfor %}
+        </select>
+      <br>
+      <br>
+    <h2>{{position_4}}</h2>
+        <select name="player_4" id="player_4" class="form-control-lg" style="margin-left: 15px">
+          {% for player in players %}
+            <option value="" class="form-control-lg" selected disabled hidden>{{player_4.name}}</option>
+            <option value="{{player.pk}}" class="form-control-lg">{{player.position}} | {{player.name}} | [{{player.overall}}/{{player.potential}}]</option>
+          {% endfor %}
+        </select>
+      <br>
+      <br>
+    <h2>{{position_5}}</h2>
+        <select name="player_5" id="player_5" class="form-control-lg" style="margin-left: 15px">
+          {% for player in players %}
+            <option value="" class="form-control-lg" selected disabled hidden>{{player_5.name}}</option>
+            <option value="{{player.pk}}" class="form-control-lg">{{player.position}} | {{player.name}} | [{{player.overall}}/{{player.potential}}]</option>
+          {% endfor %}
+        </select>
+      <br>
+      <br>
+    <h2>{{position_6}}</h2>
+        <select name="player_6" id="player_6" class="form-control-lg" style="margin-left: 15px">
+          {% for player in players %}
+            <option value="" class="form-control-lg" selected disabled hidden>{{player_6.name}}</option>
+            <option value="{{player.pk}}" class="form-control-lg">{{player.position}} | {{player.name}} | [{{player.overall}}/{{player.potential}}]</option>
+          {% endfor %}
+        </select>
+      <br>
+      <br>
+    <h2>{{position_7}}</h2>
+        <select name="player_7" id="player_7" class="form-control-lg" style="margin-left: 15px">
+          {% for player in players %}
+            <option value="" class="form-control-lg" selected disabled hidden>{{player_7.name}}</option>
+            <option value="{{player.pk}}" class="form-control-lg">{{player.position}} | {{player.name}} | [{{player.overall}}/{{player.potential}}]</option>
+          {% endfor %}
+        </select>
+      <br>
+      <br>
+    <h2>{{position_8}}</h2>
+        <select name="player_8" id="player_8" class="form-control-lg" style="margin-left: 15px">
+          {% for player in players %}
+            <option value="" class="form-control-lg" selected disabled hidden>{{player_8.name}}</option>
+            <option value="{{player.pk}}" class="form-control-lg">{{player.position}} | {{player.name}} | [{{player.overall}}/{{player.potential}}]</option>
+          {% endfor %}
+        </select>
+      <br>
+      <br>
+    <h2>{{position_9}}</h2>
+        <select name="player_9" id="player_9" class="form-control-lg" style="margin-left: 15px">
+          {% for player in players %}
+            <option value="" class="form-control-lg" selected disabled hidden>{{player_9.name}}</option>
+            <option value="{{player.pk}}" class="form-control-lg">{{player.position}} | {{player.name}} | [{{player.overall}}/{{player.potential}}]</option>
+          {% endfor %}
+        </select>
+      <br>
+      <br>
+    <h2>{{position_10}}</h2>
+        <select name="player_10" id="player_10" class="form-control-lg" style="margin-left: 15px">
+          {% for player in players %}
+            <option value="" class="form-control-lg" selected disabled hidden>{{player_10.name}}</option>
+            <option value="{{player.pk}}" class="form-control-lg">{{player.position}} | {{player.name}} | [{{player.overall}}/{{player.potential}}]</option>
+          {% endfor %}
+        </select>
+      <br>
+      <br>
+    <h2>{{position_11}}</h2>
+        <select name="player_11" id="player_11" class="form-control-lg" style="margin-left: 15px">
+          {% for player in players %}
+            <option value="" class="form-control-lg" selected disabled hidden>{{player_11.name}}</option>
+            <option value="{{player.pk}}" class="form-control-lg">{{player.position}} | {{player.name}} | [{{player.overall}}/{{player.potential}}]</option>
+          {% endfor %}
+        </select>
+      <br>
+      <br>
+    <hr>
+    <h2>Substitutes</h2>
+    <table style="width: 90%;  margin-left: 10px;">
+        <tr>
+            <td style="padding-bottom: 2em">
+                <select name="player_12" id="player_12" class="form-control-lg" style="margin-left: 15px">
+                  {% for player in players %}
+                    <option value="" class="form-control-lg" selected disabled hidden>{{player_12.name}}</option>
+                    <option value="{{player.pk}}" class="form-control-lg">{{player.position}} | {{player.name}} | [{{player.overall}}/{{player.potential}}]</option>
+                  {% endfor %}
+                </select>
+            </td>
+            <td style="padding-bottom: 2em">
+                <select name="player_13" id="player_13" class="form-control-lg" style="margin-left: 15px">
+                  {% for player in players %}
+                    <option value="" class="form-control-lg" selected disabled hidden>{{player_13.name}}</option>
+                    <option value="{{player.pk}}" class="form-control-lg">{{player.position}} | {{player.name}} | [{{player.overall}}/{{player.potential}}]</option>
+                  {% endfor %}
+                </select>
+            </td>
+            <td style="padding-bottom: 2em">
+                <select name="player_14" id="player_14" class="form-control-lg" style="margin-left: 15px">
+                  {% for player in players %}
+                    <option value="" class="form-control-lg" selected disabled hidden>{{player_14.name}}</option>
+                    <option value="{{player.pk}}" class="form-control-lg">{{player.position}} | {{player.name}} | [{{player.overall}}/{{player.potential}}]</option>
+                  {% endfor %}
+                </select>
+            </td>
+        </tr>
+        <tr></tr>
+        <tr></tr>
+        <tr>
+            <td style="padding-bottom: 2em">
+                <select name="player_15" id="player_15" class="form-control-lg" style="margin-left: 15px">
+                  {% for player in players %}
+                    <option value="" class="form-control-lg" selected disabled hidden>{{player_15.name}}</option>
+                    <option value="{{player.pk}}" class="form-control-lg">{{player.position}} | {{player.name}} | [{{player.overall}}/{{player.potential}}]</option>
+                  {% endfor %}
+                </select>
+            </td>
+            <td style="padding-bottom: 2em">
+                <select name="player_16" id="player_16" class="form-control-lg" style="margin-left: 15px">
+                  {% for player in players %}
+                    <option value="" class="form-control-lg" selected disabled hidden>{{player_16.name}}</option>
+                    <option value="{{player.pk}}" class="form-control-lg">{{player.position}} | {{player.name}} | [{{player.overall}}/{{player.potential}}]</option>
+                  {% endfor %}
+                </select>
+            </td>
+            <td style="padding-bottom: 2em">
+                <select name="player_17" id="player_17" class="form-control-lg" style="margin-left: 15px">
+                  {% for player in players %}
+                    <option value="" class="form-control-lg" selected disabled hidden>{{player_17.name}}</option>
+                    <option value="{{player.pk}}" class="form-control-lg">{{player.position}} | {{player.name}} | [{{player.overall}}/{{player.potential}}]</option>
+                  {% endfor %}
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding-bottom: 2em">
+                <select name="player_18" id="player_18" class="form-control-lg" style="margin-left: 15px">
+                  {% for player in players %}
+                    <option value="" class="form-control-lg" selected disabled hidden>{{player_18.name}}</option>
+                    <option value="{{player.pk}}" class="form-control-lg">{{player.position}} | {{player.name}} | [{{player.overall}}/{{player.potential}}]</option>
+                  {% endfor %}
+                </select>
+            </td>
+            <td style="padding-bottom: 2em">
+                <select name="player_19" id="player_19" class="form-control-lg" style="margin-left: 15px">
+                  {% for player in players %}
+                    <option value="" class="form-control-lg" selected disabled hidden>{{player_19.name}}</option>
+                    <option value="{{player.pk}}" class="form-control-lg">{{player.position}} | {{player.name}} | [{{player.overall}}/{{player.potential}}]</option>
+                  {% endfor %}
+                </select>
+            </td>
+            <td style="padding-bottom: 2em">
+                <select name="player_20" id="player_20" class="form-control-lg" style="margin-left: 15px">
+                  {% for player in players %}
+                    <option value="" class="form-control-lg" selected disabled hidden>{{player_20.name}}</option>
+                    <option value="{{player.pk}}" class="form-control-lg">{{player.position}} | {{player.name}} | [{{player.overall}}/{{player.potential}}]</option>
+                  {% endfor %}
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding-bottom: 2em">
+                <select name="player_21" id="player_21" class="form-control-lg" style="margin-left: 15px">
+                  {% for player in players %}
+                    <option value="" class="form-control-lg" selected disabled hidden>{{player_21.name}}</option>
+                    <option value="{{player.pk}}" class="form-control-lg">{{player.position}} | {{player.name}} | [{{player.overall}}/{{player.potential}}]</option>
+                  {% endfor %}
+                </select>
+            </td>
+            <td style="padding-bottom: 2em">
+                <select name="player_22" id="player_22" class="form-control-lg" style="margin-left: 15px">
+                  {% for player in players %}
+                    <option value="" class="form-control-lg" selected disabled hidden>{{player_22.name}}</option>
+                    <option value="{{player.pk}}" class="form-control-lg">{{player.position}} | {{player.name}} | [{{player.overall}}/{{player.potential}}]</option>
+                  {% endfor %}
+                </select>
+            </td>
+            <td style="padding-bottom: 2em">
+                <select name="player_23" id="player_23" class="form-control-lg" style="margin-left: 15px">
+                  {% for player in players %}
+                    <option value="" class="form-control-lg" selected disabled hidden>{{player_23.name}}</option>
+                    <option value="{{player.pk}}" class="form-control-lg">{{player.position}} | {{player.name}} | [{{player.overall}}/{{player.potential}}]</option>
+                  {% endfor %}
+                </select>
+            </td>
+        </tr>
+    </table>
+    <button class="btn btn-dark" type="submit" style="font-size: 25px; margin-left: 15px; display: inline">Set Lineup</button>
+    </form>
+    <br>
+    <hr>
+    <h1>Submit Lineup</h1>
+    <h2 style="color: red">Note: This gets sent to an email, please only submit once fully finished with lineup.</h2>
+    <form action="{% url 'submit-lineup' %}" method="POST">
+        {% csrf_token %}
+        <button class="btn btn-success" style="font-size: 25px; margin-left: 15px" type="submit">Submit Lineup</button>
+    </form>
+    <br>
+{% endblock content %}

@@ -1,0 +1,61 @@
+{% extends "management/base.html" %}
+{% block content %}
+    <table>
+        <tr>
+            <td><form action="{% url 'notifications' %}">
+              <button class="btn btn-dark" type="submit" style="margin-left: 15px; font-size: 25px;">See notifications</button>
+            </form></td>
+            <td><form action="{% url 'outbox' %}">
+              <button class="btn btn-dark" type="submit" style="margin-left: 15px; font-size: 25px;">See offers sent</button>
+            </form></td>
+        </tr>
+    </table>
+    <table style="width: 100%;  margin-left: 15px;" border="0">
+        <tr>
+            <th>Received</th>
+            <th>Player</th>
+            <th>Type</th>
+            <th>Amount</th>
+            <th>Status</th>
+        </tr>
+            {% for i in offers_received %}
+                <tr>
+                    <td>{{i.team_from}}</td>
+                    <td>{{i.player}}</td>
+                    <td>{{i.type}}</td>
+                    {% if i.type == 'Transfer' %}
+                        <td>{{i.amount}}M</td>
+                    {% else %}
+                        <td>{{i.amount}}</td>
+                    {% endif %}
+                    {% if i.accepted == "Rejected" %}
+                        <td style="color: red">{{i.accepted}}</td>
+                        <td><form action="{% url 'remove-offer' %}" method="POST">
+                          {% csrf_token %}
+                          <input type="hidden" name="offer_id" value="{{ i.pk }}">
+                          <button class="btn btn-sm btn-dark" type="submit">Remove</button>
+                        </form></td>
+                    {% elif i.accepted == "Accepted" %}
+                        <td style="color: forestgreen">{{i.accepted}}</td>
+                        <td><form action="{% url 'remove-offer' %}" method="POST">
+                          {% csrf_token %}
+                          <input type="hidden" name="offer_id" value="{{ i.pk }}">
+                          <button class="btn btn-sm btn-dark" type="submit">Remove</button>
+                        </form></td>
+                    {% else %}
+                        <td>{{i.accepted}}</td>
+                        <td><form action="{% url 'accept-offer' %}" method="POST">
+                          {% csrf_token %}
+                          <input type="hidden" name="offer_id" value="{{ i.pk }}">
+                          <button class="btn btn-sm btn-success" type="submit">Accept</button>
+                        </form></td>
+                        <td><form action="{% url 'reject-offer' %}" method="POST">
+                          {% csrf_token %}
+                          <input type="hidden" name="offer_id" value="{{ i.pk }}">
+                          <button class="btn btn-sm btn-danger" type="submit">Reject</button>
+                        </form></td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+    </table>
+{% endblock content %}

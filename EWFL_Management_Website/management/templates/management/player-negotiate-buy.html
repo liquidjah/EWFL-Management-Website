@@ -1,0 +1,14 @@
+{% extends "management/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <h1>Negotiate Signing</h1>
+    <h1>{{player_name}}</h1>
+    <h1>Current Value: {{player_value}}</h1>
+
+    <form action="{% url 'player-negotiation-response' %}" method="POST">
+      {% csrf_token %}
+      <input type="hidden" name="player_id" value="{{ player_id }}">
+      <input type="number" name="offer" min="0" max="{{transfer_budget}}" step="0.5">
+      <button class="btn btn-sm btn-dark" type="submit">Make Offer</button>
+    </form>
+{% endblock content %}

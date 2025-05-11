@@ -1,0 +1,50 @@
+{% extends "management/base.html" %}
+{% block content %}
+    <h1>Expired Players</h1>
+        <table class="table" style="width: 100%; background-color: #fcfbf8;" border="2">
+            <tr>
+                <th>Position</th>
+                <th>Name</th>
+                <th>Age</th>
+                <th>Overall</th>
+                <th>Potential</th>
+                <th>Nationality</th>
+                <th>Tactic</th>
+                <th>Wage</th>
+                <th>Loan Wage</th>
+                <th>Contract Length</th>
+                <th>Skill Points</th>
+                <th>Value</th>
+            </tr>
+        {% for player in players %}
+            <tr>
+                <td>{{player.position}}</td>
+                <td>{{player.name}}</td>
+                <td>{{player.age}}</td>
+                <td>{{player.overall}}</td>
+                <td>{{player.potential}}</td>
+                <td>{{player.nationality}}</td>
+                <td>{{player.tactic}}</td>
+                <td>{{player.wage}}</td>
+                <td>{{player.loaned_wage}}</td>
+                <td>{{player.contract_length}}</td>
+                <td>{{player.skill_points}}</td>
+                <td>{{player.value}}M</td>
+                <td>
+                    <form action="{% url 'offer-contract' %}" method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="player_id" value="{{ player.pk }}">
+                        <button class="btn btn-sm btn-success" type="submit">Resign</button>
+                    </form>
+                </td>
+                <td>
+                    <form action="{% url 'release-player' %}" method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="player_id" value="{{ player.pk }}">
+                        <button class="btn btn-sm btn-danger" type="submit">Release</button>
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+        </table>
+{% endblock content %}

@@ -1,0 +1,19 @@
+{% extends "management/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <h1>Offer Contract</h1>
+    <h1>{{player_name}}</h1>
+    <h1>Current Wage: {{current_wage}}</h1>
+    <h1>Current Contract Length: {{current_contract_length}}</h1>
+    {% if player_loaned != 'out' %}
+    <hr>
+    <form action="{% url 'contract-offer-response-outside-team' %}" method="POST">
+      {% csrf_token %}
+
+      <input type="hidden" name="player_id" value="{{ player_id }}">
+      <h2>Requested Wage <input type="number" name="offer" min="0" max="{{wage_budget}}" step="1" style="border-radius: 10px"></h2>
+      <h2>Requested Contract Length <input type="number" name="length" min="0" max="5" step="1" style="border-radius: 10px"></h2>
+      <button class="btn btn-dark" type="submit" style="margin-left: 15px">Make Offer</button>
+    </form>
+    {% endif %}
+{% endblock content %}

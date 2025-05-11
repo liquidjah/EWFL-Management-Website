@@ -1,0 +1,39 @@
+{% extends "management/base.html" %}
+{% block content %}
+    <h1>Free Agents</h1>
+        <table class="table" style="width: 100%; background-color: #fcfbf8;" border="2">
+            <tr>
+                <th>Position</th>
+                <th>Name</th>
+                <th>Age</th>
+                <th>Overall</th>
+                <th>Potential</th>
+                <th>Nationality</th>
+                <th>Tactic</th>
+                <th>Wage</th>
+                <th>Contract Length</th>
+                <th>Skill Points</th>
+            </tr>
+        {% for player in players %}
+            <tr>
+                <td>{{player.position}}</td>
+                <td>{{player.name}}</td>
+                <td>{{player.age}}</td>
+                <td>{{player.overall}}</td>
+                <td>{{player.potential}}</td>
+                <td>{{player.nationality}}</td>
+                <td>{{player.tactic}}</td>
+                <td>{{player.wage}}</td>
+                <td>{{player.contract_length}}</td>
+                <td>{{player.skill_points}}</td>
+                <td>
+                    <form action="{% url 'offer-contract-outside-team' %}" method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="player_id" value="{{ player.pk }}">
+                        <button class="btn btn-sm btn-success" type="submit">Sign</button>
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+        </table>
+{% endblock content %}

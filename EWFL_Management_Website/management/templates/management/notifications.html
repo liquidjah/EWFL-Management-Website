@@ -1,0 +1,25 @@
+{% extends "management/base.html" %}
+{% block content %}
+    <table>
+        <tr>
+            <td><form action="{% url 'inbox' %}">
+              <button class="btn btn-sm btn-dark" type="submit" style="margin-left: 15px; font-size: 25px;">See offers received</button>
+            </form></td>
+            <td><form action="{% url 'outbox' %}">
+              <button class="btn btn-sm btn-dark" type="submit" style="margin-left: 15px; font-size: 25px;">See offers sent</button>
+            </form></td>
+        </tr>
+    </table>
+    <table style="width: 100%;  margin-left: 15px;" border="0">
+            {% for i in notifications_received %}
+                <tr>
+                    <td style="font-size: 25px">{{i.message}}</td>
+                    <td><form action="{% url 'remove-notification' %}" method="POST">
+                      {% csrf_token %}
+                      <input type="hidden" name="notification_id" value="{{ i.pk }}">
+                      <button class="btn btn-sm btn-danger" type="submit">Remove</button>
+                    </form></td>
+                </tr>
+            {% endfor %}
+    </table>
+{% endblock content %}

@@ -1,0 +1,36 @@
+{% extends "management/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <h1>Scout Players</h1>
+    <hr>
+    <form action="{% url 'scout-report' %}" method="POST" style="width: 100%;  margin-left: 15px;">
+        {% csrf_token %}
+
+        <label for="position" style="font-size: 30px">Choose a Position:</label>
+        <select id="position" name="position" style="font-size: 30px; height: 60px; width: 325px; border-radius: 10px">
+            <option value="POS">All Positions</option>
+            <option value="DEF">Defenders</option>
+            <option value="MID">Midfielders</option>
+            <option value="FOR">Forwards</option>
+            {% for position in positions %}
+                <option value="{{position}}">{{position}}</option>
+            {% endfor %}
+        </select>
+        <hr>
+        <label for="nationality" style="font-size: 30px">Choose a country:</label>
+        <select id="nationality" name="nationality" style="font-size: 30px; height: 60px; width: 325px; border-radius: 10px">
+            {% for country in countries %}
+                <option value="{{country}}">{{country}}</option>
+            {% endfor %}
+        </select>
+        <hr>
+        <label for="tactic" style="font-size: 30px">Choose a tactic:</label>
+        <select id="tactic" name="tactic" style="font-size: 30px; height: 60px; width: 325px; border-radius: 10px">
+            {% for tactic in tactics %}
+                <option value="{{tactic}}">{{tactic}}</option>
+            {% endfor %}
+        </select>
+        <hr>
+        <button class="btn btn-dark" type="submit" style="font-size: 25px">Submit</button>
+    </form>
+{% endblock content %}

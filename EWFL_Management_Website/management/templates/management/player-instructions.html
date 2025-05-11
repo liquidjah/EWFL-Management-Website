@@ -1,0 +1,48 @@
+{% extends "management/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <h1>{{player.name}}'s Instructions</h1>
+    <form action="{% url 'set-player-instructions' %}" method="POST" style="display: inline-block">
+        {% csrf_token %}
+        <select name="duty" id="duty" class="form-control-lg" style="margin-left: 15px">
+            <option value="" class="form-control-lg" selected disabled hidden>{{player.duty}}</option>
+            <option value="Defend" class="form-control-lg">Defend</option>
+            <option value="Balanced" class="form-control-lg">Support</option>
+            <option value="Attack" class="form-control-lg">Attack</option>
+        </select>
+        <select name="dribbling" id="dribbling" class="form-control-lg" style="margin-left: 15px">
+            <option value="" class="form-control-lg" selected disabled hidden>{{player.dribbling}}</option>
+            <option value="Less" class="form-control-lg">Less</option>
+            <option value="Balanced" class="form-control-lg">Balanced</option>
+            <option value="More" class="form-control-lg">More</option>
+        </select>
+        <select name="shooting" id="shooting" class="form-control-lg" style="margin-left: 15px">
+            <option value="" class="form-control-lg" selected disabled hidden>{{player.shooting}}</option>
+            <option value="Less" class="form-control-lg">Less</option>
+            <option value="Balanced" class="form-control-lg">Balanced</option>
+            <option value="More" class="form-control-lg">More</option>
+        </select>
+        <select name="risk_taking" id="risk_taking" class="form-control-lg" style="margin-left: 15px">
+            <option value="" class="form-control-lg" selected disabled hidden>{{player.risk_taking}}</option>
+            <option value="Less" class="form-control-lg">Less</option>
+            <option value="Balanced" class="form-control-lg">Balanced</option>
+            <option value="More" class="form-control-lg">More</option>
+        </select>
+        <select name="tackling" id="tackling" class="form-control-lg" style="margin-left: 15px">
+            <option value="" class="form-control-lg" selected disabled hidden>{{player.tackling}}</option>
+            <option value="Cautious" class="form-control-lg">Cautious</option>
+            <option value="Balanced" class="form-control-lg">Balanced</option>
+            <option value="Hard" class="form-control-lg">Hard</option>
+        </select>
+        <select name="freedom" id="freedom" class="form-control-lg" style="margin-left: 15px">
+            <option value="" class="form-control-lg" selected disabled hidden>{{player.freedom}}</option>
+            <option value="Hold Position" class="form-control-lg">Hold Position</option>
+            <option value="Balanced" class="form-control-lg">Balanced</option>
+            <option value="Roam" class="form-control-lg">Roam</option>
+        </select>
+        <br>
+        <br>
+        <input type="hidden" name="player_id" value="{{ player.pk }}">
+        <button class="btn btn-dark" type="submit" style="font-size: 25px; margin-left: 15px">Set Instructions</button>
+    </form>
+{% endblock content %}

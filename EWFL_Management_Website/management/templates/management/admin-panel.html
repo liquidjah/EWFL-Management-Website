@@ -1,0 +1,17 @@
+{% extends "management/base.html" %}
+{% block content %}
+<a class="btn btn-dark btn-sm" style="margin-left: 5px; font-size: 30px; padding: 2px 5px; margin-bottom: 10px;" href="{% url 'open-transfer-window' %}">Open Transfer Window</a>
+<a class="btn btn-dark btn-sm" style="margin-left: 5px; font-size: 30px; padding: 2px 5px; margin-bottom: 10px;" href="{% url 'close-transfer-window' %}">Close Transfer Window</a>
+<a class="btn btn-dark btn-sm" style="margin-left: 5px; font-size: 30px; padding: 2px 5px; margin-bottom: 10px;" href="{% url 'return-loans' %}">Return Loans</a>
+<a class="btn btn-dark btn-sm" style="margin-left: 5px; font-size: 30px; padding: 2px 5px; margin-bottom: 10px;" href="{% url 'create-player-form' %}">Create Player</a>
+<a class="btn btn-dark btn-sm" style="margin-left: 5px; font-size: 30px; padding: 2px 5px; margin-bottom: 10px;" href="{% url 'create-youth-player-form' %}">Create Feeder Player</a>
+<a class="btn btn-dark btn-sm" style="margin-left: 5px; font-size: 30px; padding: 2px 5px; margin-bottom: 10px;" href="{% url 'change-transfer-budget-form' %}">Change Transfer Budget</a>
+<a class="btn btn-dark btn-sm" style="margin-left: 5px; font-size: 30px; padding: 2px 5px; margin-bottom: 10px;" href="{% url 'change-facilities-budget-form' %}">Change Facilities Budget</a>
+<a class="btn btn-dark btn-sm" style="margin-left: 5px; font-size: 30px; padding: 2px 5px; margin-bottom: 10px;" href="{% url 'change-wage-budget-form' %}">Change Wage Budget</a>
+<a class="btn btn-dark btn-sm" style="margin-left: 5px; font-size: 30px; padding: 2px 5px; margin-bottom: 10px;" href="{% url 'update-facilities-form' %}">Update Facilities</a>
+<a class="btn btn-dark btn-sm" style="margin-left: 5px; font-size: 30px; padding: 2px 5px; margin-bottom: 10px;" href="{% url 'advance-week' %}">Advance Week</a>
+<a class="btn btn-dark btn-sm" style="margin-left: 5px; font-size: 30px; padding: 2px 5px; margin-bottom: 10px;" href="{% url 'update-scouted-players' %}">Update Scouted Players</a>
+<a class="btn btn-dark btn-sm" style="margin-left: 5px; font-size: 30px; padding: 2px 5px; margin-bottom: 10px;" href="{% url 'update-womens-teams' %}">Update Womens Teams</a>
+<a class="btn btn-dark btn-sm" style="margin-left: 5px; font-size: 30px; padding: 2px 5px; margin-bottom: 10px;" href="{% url 'advance-season' %}">Advance Season</a>
+<a class="btn btn-dark btn-sm" style="margin-left: 5px; font-size: 30px; padding: 2px 5px; margin-bottom: 10px;" href="{% url 'fix-all-team-wages' %}">Fix Wages</a>
+{% endblock content %}

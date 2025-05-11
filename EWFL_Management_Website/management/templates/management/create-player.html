@@ -1,0 +1,68 @@
+{% extends "management/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <div class="content-section">
+        <form class="form-inline" action="{% url 'create-player' %}" method="POST">
+            {% csrf_token %}
+            <fieldset>
+                <legend class="border-bottom mb-4">Create Player</legend>
+                {{ form|crispy }}
+            </fieldset>
+            <div class="form-group mb-2">
+                <input name="name" type="text" placeholder="Name" class="form-control-lg">
+                <br>
+                <br>
+                <select name="sex" id="sex"  class="form-control-lg">
+                    <option value="Male" class="form-control-lg">Male</option>
+                    <option value="Female" class="form-control-lg">Female</option>
+                </select>
+                <br>
+                <br>
+                <select name="position" id="position" class="form-control-lg">
+                    {% for i in positions %}
+                        <option value="{{i}}" class="form-control-lg">{{i}}</option>
+                    {% endfor %}
+                </select>
+                <br>
+                <br>
+                    <input name="age" type="number" step="1" min="13" placeholder="Age" class="form-control-lg">
+                <br>
+                <br>
+                    <input name="overall" type="number" step="1" min="0" placeholder="Overall" class="form-control-lg">
+                <br>
+                <br>
+                    <input name="potential" type="number" step="1" min="0" placeholder="Potential" class="form-control-lg">
+                <br>
+                <br>
+                <select name="nationality" id="nationality"  class="form-control-lg">
+                    {% for i in countries %}
+                        <option value="{{i}}" class="form-control-lg">{{i}}</option>
+                    {% endfor %}
+                </select>
+                <br>
+                <br>
+                <select name="tactic" id="tactic"  class="form-control-lg">
+                    {% for i in tactics %}
+                        <option value="{{i}}" class="form-control-lg">{{i}}</option>
+                    {% endfor %}
+                </select>
+                <br>
+                <br>
+                <input name="wage" type="number" step="1" min="0" placeholder="Wage" class="form-control-lg">
+                <br>
+                <br>
+                <input name="contract_length" type="number" step="1" min="0" placeholder="Contract Length" class="form-control-lg">
+                <br>
+                <br>
+                <select name="team" id="team"  class="form-control-lg">
+                    {% for i in teams %}
+                        <option value="{{i.id}}" class="form-control-lg">{{i.name}}</option>
+                    {% endfor %}
+                </select>
+                <br>
+                <br>
+                <button class="btn btn-dark" type="submit">Submit</button>
+            </div>
+        </form>
+    </div>
+{% endblock content %}

@@ -1,0 +1,21 @@
+{% extends "management/base.html" %}
+{% block content %}
+    <table style="margin-left: 15px;" border="0">
+        <tr>
+            <th>Team</th>
+            <th>Owner</th>
+        </tr>
+    {% for i in teams %}
+        <tr>
+            <td style="padding-right: 20px; padding-bottom: 1em;">
+                <form action="{% url 'team-detail' %}" method="POST">
+                  {% csrf_token %}
+                  <input type="hidden" name="team_name" value="{{ i.name }}">
+                  <button class="btn btn-dark" style="font-size: 25px;" type="submit">{{i.name}}</button>
+                </form>
+            </td>
+            <td style="font-size: 25px; margin-left: 10px; padding-bottom: 1em;">{{i.owner}}</td>
+        </tr>
+    {% endfor %}
+    </table>
+{% endblock content %}

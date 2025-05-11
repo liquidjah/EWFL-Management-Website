@@ -1,0 +1,36 @@
+{% extends "management/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <div class="content-section">
+        <form class="form-inline" action="{% url 'update-facilities' %}" method="POST">
+            {% csrf_token %}
+            <fieldset>
+                <legend class="border-bottom mb-4">Update Facilities</legend>
+                {{ form|crispy }}
+            </fieldset>
+            <div class="form-group mb-2">
+                <select name="action" id="action"  class="form-control-lg">
+                    <option value="upgrade" class="form-control-lg">Upgrade</option>
+                    <option value="downgrade" class="form-control-lg">Downgrade</option>
+                </select>
+                <br>
+                <br>
+                <select name="facility" id="facility"  class="form-control-lg">
+                    {% for i in facilities %}
+                        <option value="{{i}}" class="form-control-lg">{{i}}</option>
+                    {% endfor %}
+                </select>
+                <br>
+                <br>
+                <select name="team" id="team"  class="form-control-lg">
+                    {% for i in teams %}
+                        <option value="{{i.id}}" class="form-control-lg">{{i.name}}</option>
+                    {% endfor %}
+                </select>
+                <br>
+                <br>
+                <button class="btn btn-dark" type="submit">Submit</button>
+            </div>
+        </form>
+    </div>
+{% endblock content %}
